@@ -122,6 +122,33 @@ def print_ws_links():
         print(v)
         print("***************************************************************************")
 
+def get_tweets():
+
+    f_path = "/Volumes/sanket_drive/WebCrawledData/"
+    f_name_path1 = f_path + "ws_crawled_more_features.csv"
+    f_name_path2 = f_path + "ws_crawled_data.csv"
+
+    twitter_data_link = {"ws_name": [], "social": []}
+
+    with open(f_name_path1, encoding="ISO-8859-1") as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+
+        line_count = 0
+        _link_count = 0
+        tweet_str = ""
+
+        for row in csv_reader:
+            if line_count > 0:
+                if "http" in row[8] and "twitter" in row[8]:
+                    _link_count += 1
+                elif "http" in row[7] and "twitter" in row[7]:
+                    _link_count += 1
+            line_count+=1
+        print(_link_count)
+
+
+
+
 
 
 
@@ -168,6 +195,7 @@ def main():
                     print(k+": "+v)'''
     #get_all_mashup_description()
     #print_ws_links()
+    get_tweets()
 
 
 
