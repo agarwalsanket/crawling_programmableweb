@@ -10,7 +10,7 @@ def get_tweets():
     browser = webdriver.Chrome()
     f_path = "/Volumes/sanket_drive/WebCrawledData/"
     f_name_path1 = f_path + "ws_crawled_more_features.csv"
-    f_name_path2 = f_path + "ws_crawled_data.csv"
+
 
     twitter_data_link = {"ws_name": [], "social": []}
 
@@ -104,11 +104,6 @@ def saving_tweets():
     tweets = None
 
 
-    for k, v in twitter_data.items():
-        print(k+": "+v)
-        print("*************************************************")
-
-
     '''with open('ws_tweets.pickle', 'rb') as handle:
         tweets = pickle.load(handle)'''
 
@@ -123,12 +118,16 @@ def saving_tweets():
         with open('ws_tweets.pickle', 'wb') as handle:
             pickle.dump(twitter_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+    for k, v in twitter_data.items():
+        print(k + ": " + v[1])
+        print("*************************************************")
+
 def check_tweets():
     tweets =None
-    with open('ws_tweets_copy.pickle', 'rb') as handle:
+    with open('ws_tweets.pickle', 'rb') as handle:
         tweets = pickle.load(handle)
     count  = 0
-    with open('ws_tweets.csv', mode='w', newline='') as csvfile:
+    '''with open('ws_tweets.csv', mode='w', newline='') as csvfile:
         fieldnames = ['ws_name', 'tweets']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -138,9 +137,14 @@ def check_tweets():
                 print(k+": "+v)
                 print("*************************************************")
                 count+=1
-    print(count)
+    print(count)'''
 
-    print(len(tweets))
+    for k, v in tweets.items():
+        if len(v[1])>200:
+            count+=1
+            print(k+": "+v[1])
+
+    print(count)
 
 def get_ws_with_Same_tweets():
     tweets = None
@@ -161,6 +165,41 @@ def get_ws_with_Same_tweets():
         print(v)
     print(len(list_of_ws_having_same_tweeter))
 
+def concatenating_tweets_to_ws_desc():
+    f_path = "/Volumes/sanket_drive/WebCrawledData/"
+    csv_file_path = f_path + "ws_crawled_data.csv"
+
+    full_ws_data = {}
+    count=0
+    tweets = None
+    with open('ws_tweets.pickle', 'rb') as handle:
+        tweets = pickle.load(handle)
+
+    with open(csv_file_path, encoding="ISO-8859-1") as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+
+
+        for row in csv_reader:
+            if count>0 and row[0] in tweets:
+                desc = row[1]+" "+tweets[row[0]][1]
+                full_ws_data[row[0]] = {"desc":desc, "primary":row[3], "secondary":row[4]}
+            count+=1
+
+
+    with open('full_ws_data.pickle', 'wb') as handle:
+        pickle.dump(full_ws_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    test = None
+    with open('full_ws_data.pickle', 'rb') as handle:
+        test = pickle.load(handle)
+
+
+    for k, v in test.items():
+        print(v)
+    print(len(test))
+
+
+
 
 
 
@@ -168,4 +207,4 @@ def get_ws_with_Same_tweets():
 
 
 if __name__ == '__main__':
-    get_tweets()
+    concatenating_tweets_to_ws_desc()
